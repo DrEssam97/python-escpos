@@ -26,9 +26,15 @@ def rasters(data: bytes) -> Image.Image:
         height = data[i + 6] + 256 * data[i + 7]
         bits = data[i + 8 : i + 8 + width_bytes * height]
         # In GS v 0 a set bit is a black dot; mode "1" uses 1 for white.
-        blocks.append(Image.frombytes("1", (width_bytes * 8, height), bytes(255 - b for b in bits)))
+        blocks.append(
+            Image.frombytes(
+                "1", (width_bytes * 8, height), bytes(255 - b for b in bits)
+            )
+        )
         i += 8 + width_bytes * height
-    sheet = Image.new("1", (max(b.width for b in blocks), sum(b.height for b in blocks)), 1)
+    sheet = Image.new(
+        "1", (max(b.width for b in blocks), sum(b.height for b in blocks)), 1
+    )
     y = 0
     for block in blocks:
         sheet.paste(block, (0, y))
@@ -44,7 +50,12 @@ def main(out: Path) -> None:
 
     for font in ("noto-naskh", "cairo"):
         img = khatt.caption_image(
-            TEXT, font=font, font_size=30, size=(width, None), method="caption", bg_color="white"
+            TEXT,
+            font=font,
+            font_size=30,
+            size=(width, None),
+            method="caption",
+            bg_color="white",
         )
         print(font, img.size, img.mode)
         p = Dummy(profile="TM-T88V")
